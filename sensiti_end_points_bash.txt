@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# Tool Name: AI Sensitive Endpoints Tool
+# Created by MSH Reddy (OSCP) - Perth, Australia
+
+# Display tool name before execution
+echo -e "\e[34m======================================\e[0m"
+echo -e "\e[34m AI Sensitive Endpoints Tool \e[0m"
+echo -e "\e[34m Created by MSH Reddy (OSCP) - Perth, Australia \e[0m"
+echo -e "\e[34m======================================\e[0m"
+
+# List of sensitive endpoints to check
+declare -A checked_endpoints
+declare -a success_endpoints
+endpoints=(
+    "/admin" "/login" "/dashboard" "/config" "/.git" "/.env" "/wp-admin"
+    "/phpinfo.php" "/backup" "/db" "/cgi-bin" "/server-status" "/robots.txt"
+    "/.htaccess" "/.htpasswd" "/api" "/config.json" "/config.php" "/debug"
+    "/shell" "/admin-panel" "/admin-console" "/administrator" "/user" "/users"
+    "/signup" "/register" "/auth" "/authentication" "/account" "/accounts"
+    "/billing" "/invoice" "/orders" "/cart" "/checkout" "/password-reset"
+    "/forgot-password" "/change-password" "/reset-password" "/private" "/hidden"
+    "/data" "/database" "/logs" "/log" "/dump" "/test" "/staging" "/old"
+    "/temp" "/temporary" "/upload" "/uploads" "/files" "/scripts" "/source"
+    "/debug.log" "/out" "/error"
+    # AI-specific sensitive endpoints
+    "/ai/admin" "/ai/config" "/ai/models" "/ai/train" "/ai/data"
+    "/ai/monitor" "/ai/logs" "/ai/predict" "/ai/analyze" "/ml/admin"
+    "/ml/config" "/ml/data" "/ml/models" "/ml/train" "/ml/logs"
+)
+
+# Function to check response codes
+detect_response() {
+    local url="$1"
+    if [[ -z "${checked_endpoints[$url]}" ]]; then
+        checked_endpoints[$url]=1
+        local response_code=$(curl -o /dev/null -s -w "%{http_code}" --max-time 5 "$url")
+
+        case $response_code in
+            1*) echo -e "[INFO] $url -> Response: $response_code (Informational)" ;;
+            2*) 
+                echo -e "\e[31m[SUCCESS] $url -> Response: $response_code (Success)\e[0m"
+                success_endpoints+=("$url -> Response: $response_code")
+                ;;
+            3*) echo -e "[REDIRECT] $url -> Response: $response_code (Redirection)" ;;
+            4*) echo -e "[CLIENT ERROR] $url -> Response: $response_code (Client Error)" ;;
+            5*) echo -e "[SERVER ERROR] $url -> Response: $response_code (Server Error)" ;;
+            *) echo -e "[UNKNOWN] $url -> Response: $response_code (Unexpected Response)" ;;
+        esac
+    fi
+}
+
+# Function to process multiple URLs from a file or a single input
+process_urls() {
+    local file_or_url="$1"
+    
+    if [[ -f "$file_or_url" ]]; then
+        mapfile -t domains < "$file_or_url"
+    else
+        domains=("$file_or_url")
+    fi
+    
+    for domain in "${domains[@]}"; do
+        for endpoint in "${endpoints[@]}"; do
+            detect_response "http://$domain$endpoint"
+            detect_response "https://$domain$endpoint"
+        done
+    done
+}
+
+# Check if a file or a single URL is provided
+if [ "$1" ]; then
+    process_urls "$1"
+else
+    echo "Usage: $0 <single_url_or_file>"
+    exit 1
+fi
+
+# Display only 200 OK responses at the end
+echo -e "\e[34m======================================\e[0m"
+echo -e "\e[34m Scan Completed by AI Sensitive Endpoints Tool \e[0m"
+echo -e "\e[34m Created by MSH Reddy (OSCP) - Perth, Australia \e[0m"
+echo -e "\e[34m======================================\e[0m"
+if [ ${#success_endpoints[@]} -eq 0 ]; then
+    echo -e "\e[33mNo successful (200 OK) endpoints found.\e[0m"
+else
+    echo -e "\e[32m URGENT ACTION REQUIRED: Successful Endpoints:\e[0m"
+    for endpoint in "${success_endpoints[@]}"; do
+        echo -e "\e[31m$endpoint - Needs Immediate Attention!\e[0m"
+    done
+fi
