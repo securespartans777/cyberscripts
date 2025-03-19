@@ -113,9 +113,15 @@ def test_xss(url, params):
 if __name__ == "__main__":
     target_url = input("Enter target URL (with parameters, e.g., https://example.com/page?query=search): ")
     parsed_url = urllib.parse.urlparse(target_url)
-    query_params = urllib.parse.parse_qs(parsed_url.query)
     
-    if not query_params:
+    # Extract query parameters from both query string and fragment
+    query_params = urllib.parse.parse_qs(parsed_url.query)
+    fragment_params = urllib.parse.parse_qs(parsed_url.fragment)
+    
+    # Combine query and fragment parameters
+    all_params = {**query_params, **fragment_params}
+    
+    if not all_params:
         print("No query parameters found in the URL. Please provide a URL with parameters.")
     else:
-        test_xss(parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path, query_params)
+        test_xss(parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path, all_params)
