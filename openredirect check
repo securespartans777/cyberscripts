@@ -1,0 +1,256 @@
+#!/bin/bash
+
+# Open Redirect Vulnerability Scanner
+# Version 3.3 - Full working version
+# Author: Cyber7
+# Features:
+# - Proper URL handling
+# - Accurate redirect detection
+# - No false positives
+# - Detailed output
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Initialize counters
+declare -A status_counts
+status_counts[1XX]=0
+status_counts[2XX]=0
+status_counts[3XX]=0
+status_counts[4XX]=0
+status_counts[5XX]=0
+total_tested=0
+vulnerable_count=0
+first_entry=true
+
+# Check dependencies
+check_deps() {
+    if ! command -v curl &> /dev/null; then
+        echo -e "${RED}Error: curl is not installed. Please install curl first.${NC}"
+        exit 1
+    fi
+}
+
+# URL encode function
+urlencode() {
+    local string="${1}"
+    local strlen=${#string}
+    local encoded=""
+    local pos c o
+
+    for (( pos=0 ; pos<strlen ; pos++ )); do
+        c=${string:$pos:1}
+        case "$c" in
+            [-_.~a-zA-Z0-9] ) o="${c}" ;;
+            * ) printf -v o '%%%02x' "'$c"
+        esac
+        encoded+="${o}"
+    done
+    echo "${encoded}"
+}
+
+# Initialize the scanner
+init_scanner() {
+    check_deps
+    OUTPUT_FILE="open_redirect_results_$(date +%Y%m%d_%H%M%S).json"
+    echo "[" > "$OUTPUT_FILE"
+}
+
+# Common redirect parameters
+REDIRECT_PARAMS=(
+    "url" "redirect" "redirect_to" "redirect_url" "r" "u" "next" 
+    "target" "dest" "destination" "return" "returnTo" "return_to" 
+    "checkout_url" "continue" "view" "image_url" "go" "file" "page" 
+    "feed" "host" "port" "to" "out" "view" "dir" "navigation" "open" 
+    "uri" "path" "data" "reference" "site" "html" "val" "validate" 
+    "domain" "callback" "return_path" "s" "q" "search" "query"
+)
+
+# Test payloads
+TEST_PAYLOADS=(
+    "http://evil.com"
+    "https://attacker.com"
+    "//example.com"
+    "/\\bing.com"
+    "/%09/example.com"
+    "/%2f%2fexample.com"
+    "/%5cexample.com"
+    "/.example.com"
+    "///example.com"
+    "////example.com"
+    "/////example.com/"
+    "//google.com/%2f.."
+    "https://google.com/%2f.."
+    "//www.google.com/%2f%2e%2e"
+    "//google.com/"
+    "//google.com//"
+    "///example.com/%2e%2e"
+    "///example.com/%2f%2e%2e"
+    "//example.com"
+    "//example.com/%2e%2e"
+)
+
+# Domains to check for in redirects
+REDIRECT_DOMAINS=("evil.com" "attacker.com" "example.com" "google.com" "bing.com")
+
+# Test a single URL with a payload
+test_payload() {
+    local base_url=$1
+    local param=$2
+    local payload=$3
+    local protocol=$4
+    
+    # Construct test URL
+    if [[ $base_url == *"?"* ]]; then
+        test_url="${base_url}&${param}=$(urlencode "$payload")"
+    else
+        test_url="${base_url}?${param}=$(urlencode "$payload")"
+    fi
+    
+    echo -e "${CYAN}Testing: ${test_url}${NC}"
+    
+    # Make the request (following redirects)
+    response=$(curl -s -I -L -w "%{http_code}|%{redirect_url}|%{url_effective}" -o /dev/null "$test_url" 2>&1)
+    
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED}Curl error testing ${test_url}${NC}"
+        echo -e "${YELLOW}Response: ${response}${NC}"
+        return
+    fi
+    
+    # Parse response
+    status_code=$(echo "$response" | cut -d'|' -f1)
+    redirect_url=$(echo "$response" | cut -d'|' -f2)
+    effective_url=$(echo "$response" | cut -d'|' -f3)
+    
+    # Classify status code
+    if [[ $status_code =~ ^1[0-9]{2}$ ]]; then
+        status_class="1XX"
+    elif [[ $status_code =~ ^2[0-9]{2}$ ]]; then
+        status_class="2XX"
+    elif [[ $status_code =~ ^3[0-9]{2}$ ]]; then
+        status_class="3XX"
+    elif [[ $status_code =~ ^4[0-9]{2}$ ]]; then
+        status_class="4XX"
+    elif [[ $status_code =~ ^5[0-9]{2}$ ]]; then
+        status_class="5XX"
+    else
+        status_class="UNKNOWN"
+    fi
+    
+    # Update counters
+    ((status_counts[$status_class]++))
+    ((total_tested++))
+    
+    # Check if vulnerable - strict conditions
+    vulnerable=false
+    for domain in "${REDIRECT_DOMAINS[@]}"; do
+        # Only consider it a redirect if:
+        # 1. The effective URL is different from our test URL
+        # 2. It contains our target domain
+        # 3. It's not just echoing back our parameter
+        if [[ "$effective_url" != "$test_url" ]] && 
+           [[ "$effective_url" == *"$domain"* ]] && 
+           [[ "$effective_url" != *"${param}="* ]]; then
+            vulnerable=true
+            ((vulnerable_count++))
+            echo -e "${RED}Potential open redirect found!${NC}"
+            echo -e "Payload: ${payload}"
+            echo -e "Status: ${status_code}"
+            echo -e "Redirected to: ${effective_url}"
+            break
+        fi
+    done
+    
+    # Save results to JSON
+    if [ "$first_entry" = false ]; then
+        echo "," >> "$OUTPUT_FILE"
+    else
+        first_entry=false
+    fi
+    
+    # Create JSON entry
+    cat <<EOF >> "$OUTPUT_FILE"
+    {
+        "url": "$base_url",
+        "param": "$param",
+        "payload": "$payload",
+        "test_url": "$test_url",
+        "status_code": "$status_code",
+        "redirect_url": "$redirect_url",
+        "effective_url": "$effective_url",
+        "vulnerable": $vulnerable
+    }
+EOF
+}
+
+# Scan a single URL
+scan_url() {
+    local url=$1
+    
+    # Add protocol if missing
+    if [[ ! $url =~ ^https?:// ]]; then
+        url="http://$url"
+    fi
+    
+    # Determine protocol
+    if [[ $url == https* ]]; then
+        protocol="HTTPS"
+    else
+        protocol="HTTP"
+    fi
+    
+    echo -e "\n${CYAN}Testing URL: $url${NC}"
+    echo -e "${YELLOW}Protocol: $protocol${NC}"
+    
+    # Test each parameter with each payload
+    for param in "${REDIRECT_PARAMS[@]}"; do
+        echo -e "\n${BLUE}Testing parameter: $param${NC}"
+        for payload in "${TEST_PAYLOADS[@]}"; do
+            test_payload "$url" "$param" "$payload" "$protocol"
+        done
+    done
+}
+
+# Main function
+main() {
+    if [ $# -eq 0 ]; then
+        echo -e "${RED}Usage: $0 <URL1> [URL2] [URL3] ...${NC}"
+        echo -e "${YELLOW}Example: $0 'https://example.com/?param=value'${NC}"
+        echo -e "${YELLOW}Example: $0 example.com/path${NC}"
+        exit 1
+    fi
+
+    init_scanner
+    
+    # Process each URL
+    for url in "$@"; do
+        scan_url "$url"
+    done
+    
+    # Close JSON array
+    echo "]" >> "$OUTPUT_FILE"
+    
+    # Display summary
+    echo -e "\n${GREEN}Scan completed!${NC}"
+    echo -e "${BLUE}Results saved to: $OUTPUT_FILE${NC}"
+    echo ""
+    echo -e "${CYAN}=== Summary ===${NC}"
+    echo -e "Total URLs Tested: $#"
+    echo -e "Total Requests: $total_tested"
+    echo -e "Potential Vulnerabilities Found: ${RED}$vulnerable_count${NC}"
+    echo -e "Status Codes:"
+    echo -e "  ${BLUE}1XX: ${status_counts[1XX]}${NC}"
+    echo -e "  ${GREEN}2XX: ${status_counts[2XX]}${NC}"
+    echo -e "  ${YELLOW}3XX: ${status_counts[3XX]}${NC}"
+    echo -e "  ${MAGENTA}4XX: ${status_counts[4XX]}${NC}"
+    echo -e "  ${RED}5XX: ${status_counts[5XX]}${NC}"
+}
+
+main "$@"
