@@ -1,0 +1,116 @@
+github.com/projectdiscovery/httpx/runner
+net/http/pprof
+github.com/projectdiscovery/utils/pprof
+github.com/projectdiscovery/httpx/internal/pdcp
+github.com/projectdiscovery/httpx/cmd/httpx
+cyber7% httpx -version
+
+Usage: httpx [OPTIONS] URL
+
+Error: No such option: -e
+cyber7% which httpx
+
+/usr/bin/httpx
+cyber7% export PATH="$PATH:$(go env GOPATH)/bin"
+
+cyber7% source ~/.zshrc  # or ~/.bashrc
+
+cyber7% httpx -version
+
+Usage: httpx [OPTIONS] URL
+
+Error: No such option: -e
+cyber7% sudo mv /usr/bin/httpx /usr/bin/httpx.bak
+
+[sudo] password for kali: 
+cyber7% ls "$(go env GOPATH)/bin/httpx"
+
+/home/kali/go/bin/httpx
+cyber7% $(go env GOPATH)/bin/httpx -version
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current Version: v1.7.0
+cyber7% cat swissdomain.txt | /home/kali/go/bin/httpx -mc 200
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://roadshow.swisslos.ch
+https://glueckskugel.swisslos.ch
+https://adventslos.swisslos.ch
+https://seg.swisslos.ch
+https://horizon.swisslos.ch
+https://careware.swisslos.ch
+https://gs.swisslos.ch
+https://news.swisslos.ch
+https://news-test.swisslos.ch
+https://tmws.swisslos.ch
+https://www.glueckskugel.swisslos.ch
+cyber7% cat swissdomain.txt | httpx -mc 200 -status-code
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://glueckskugel.swisslos.ch [200]
+https://adventslos.swisslos.ch [200]
+https://roadshow.swisslos.ch [200]
+https://news.swisslos.ch [200]
+https://seg.swisslos.ch [200]
+https://horizon.swisslos.ch [200]
+https://careware.swisslos.ch [200]
+https://www.glueckskugel.swisslos.ch [200]
+https://news-test.swisslos.ch [200]
+https://gs.swisslos.ch [200]
+https://tmws.swisslos.ch [200]
+cyber7% cat swissdomain.txt | httpx -mc 200 -status-code -ip -title
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://adventslos.swisslos.ch [200] [Das Adventslos von Swisslos] [66.33.60.129]
+https://glueckskugel.swisslos.ch [200] [Swisslos] [76.76.21.61]
+https://roadshow.swisslos.ch [200] [Swisslos] [76.76.21.98]
+https://news.swisslos.ch [200] [Inxmail Server - professionelles E-Mail-Marketing] [93.191.162.150]
+https://news-test.swisslos.ch [200] [Inxmail Server - professionelles E-Mail-Marketing] [93.191.162.150]
+https://seg.swisslos.ch [200] [185.38.65.50]
+https://horizon.swisslos.ch [200] [VMware Horizon] [185.38.65.76]
+https://careware.swisslos.ch [200] [185.38.65.55]
+https://www.glueckskugel.swisslos.ch [200] [Swisslos] [76.76.21.61]
+https://gs.swisslos.ch [200] [91.213.227.161]
+https://tmws.swisslos.ch [200] [time.pro] [185.38.65.170]
