@@ -1,0 +1,521 @@
+httpx::
+ithub.com/projectdiscovery/utils/pprof
+github.com/projectdiscovery/httpx/internal/pdcp
+github.com/projectdiscovery/httpx/cmd/httpx
+cyber7% httpx -version
+
+Usage: httpx [OPTIONS] URL
+
+Error: No such option: -e
+cyber7% which httpx
+
+/usr/bin/httpx
+cyber7% export PATH="$PATH:$(go env GOPATH)/bin"
+
+cyber7% source ~/.zshrc  # or ~/.bashrc
+
+cyber7% httpx -version
+
+Usage: httpx [OPTIONS] URL
+
+Error: No such option: -e
+cyber7% sudo mv /usr/bin/httpx /usr/bin/httpx.bak
+
+[sudo] password for kali: 
+cyber7% ls "$(go env GOPATH)/bin/httpx"
+
+/home/kali/go/bin/httpx
+cyber7% $(go env GOPATH)/bin/httpx -version
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current Version: v1.7.0
+cyber7% cat swissdomain.txt | /home/kali/go/bin/httpx -mc 200
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://roadshow.swisslos.ch
+https://glueckskugel.swisslos.ch
+https://adventslos.swisslos.ch
+https://seg.swisslos.ch
+https://horizon.swisslos.ch
+https://careware.swisslos.ch
+https://gs.swisslos.ch
+https://news.swisslos.ch
+https://news-test.swisslos.ch
+https://tmws.swisslos.ch
+https://www.glueckskugel.swisslos.ch
+cyber7% cat swissdomain.txt | httpx -mc 200 -status-code
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://glueckskugel.swisslos.ch [200]
+https://adventslos.swisslos.ch [200]
+https://roadshow.swisslos.ch [200]
+https://news.swisslos.ch [200]
+https://seg.swisslos.ch [200]
+https://horizon.swisslos.ch [200]
+https://careware.swisslos.ch [200]
+https://www.glueckskugel.swisslos.ch [200]
+https://news-test.swisslos.ch [200]
+https://gs.swisslos.ch [200]
+https://tmws.swisslos.ch [200]
+cyber7% cat swissdomain.txt | httpx -mc 200 -status-code -ip -title
+
+
+    __    __  __       _  __
+   / /_  / /_/ /_____ | |/ /
+  / __ \/ __/ __/ __ \|   /
+ / / / / /_/ /_/ /_/ /   |
+/_/ /_/\__/\__/ .___/_/|_|
+             /_/
+
+                projectdiscovery.io
+
+[INF] Current httpx version v1.7.0 (latest)
+[WRN] UI Dashboard is disabled, Use -dashboard option to enable
+https://adventslos.swisslos.ch [200] [Das Adventslos von Swisslos] [66.33.60.129]
+https://glueckskugel.swisslos.ch [200] [Swisslos] [76.76.21.61]
+https://roadshow.swisslos.ch [200] [Swisslos] [76.76.21.98]
+https://news.swisslos.ch [200] [Inxmail Server - professionelles E-Mail-Marketing] [93.191.162.150]
+https://news-test.swisslos.ch [200] [Inxmail Server - professionelles E-Mail-Marketing] [93.191.162.150]
+https://seg.swisslos.ch [200] [185.38.65.50]
+https://horizon.swisslos.ch [200] [VMware Horizon] [185.38.65.76]
+https://careware.swisslos.ch [200] [185.38.65.55]
+https://www.glueckskugel.swisslos.ch [200] [Swisslos] [76.76.21.61]
+https://gs.swisslos.ch [200] [91.213.227.161]
+https://tmws.swisslos.ch [200] [time.pro] [185.38.65.170]
+cyber7% cat swissdomain.txt | httpx                                
+
+cyber7% cat domains.txt | gau > all_urls.txt                       
+
+cat: domains.txt: No such file or directory
+cyber7% cat swissdomain.txt | gau > all_urls.txt                   
+cyber7% ls
+all_urls.txt  LICENSE  MANIFEST.in  README.md  requirements.txt  setup.py  subbrute  sublist3r_env  sublist3r.py  swissdomain.txt
+cyber7% cat all_urls.txt
+
+------------------
+sublist3r
+----------------
+ hackerone_put_method_all_programs_check.sh   passwordlist.txt                             Sublist3r
+cyber7% Sublist3r -d dmeta.one
+
+zsh: command not found: Sublist3r
+cyber7% python3 sublist3r.py -d dmeta.one
+
+python3: can't open file '/home/kali/sublist3r.py': [Errno 2] No such file or directory
+cyber7% cd Sublist3r                     
+
+cyber7% LS
+zsh: command not found: LS
+cyber7% ls
+LICENSE  MANIFEST.in  README.md  requirements.txt  setup.py  subbrute  sublist3r_env  sublist3r.py
+cyber7% python3 sublist3r.py -d dmeta.one
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+[-] Enumerating subdomains now for dmeta.one                                                                                                                                                
+[-] Searching now in Baidu..
+[-] Searching now in Yahoo..
+[-] Searching now in Google..
+[-] Searching now in Bing..
+[-] Searching now in Ask..
+[-] Searching now in Netcraft..
+[-] Searching now in DNSdumpster..
+[-] Searching now in Virustotal..
+[-] Searching now in ThreatCrowd..
+[-] Searching now in SSL Certificates..
+[-] Searching now in PassiveDNS..
+[!] Error: Virustotal probably now is blocking our requests
+Process DNSdumpster-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 647, in enumerate
+    token = self.get_csrftoken(resp)
+  File "/home/kali/Sublist3r/sublist3r.py", line 641, in get_csrftoken
+    token = csrf_regex.findall(resp)[0]
+            ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+cyber7% python3 sublist3r.py -d https://beemediahub.com/
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+Error: Please enter a valid domain                                                                                                                                                          
+cyber7% python3 sublist3r.py -d beemediahub.com  
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+[-] Enumerating subdomains now for beemediahub.com                                                                                                                                          
+[-] Searching now in Baidu..
+[-] Searching now in Yahoo..
+[-] Searching now in Google..
+[-] Searching now in Bing..
+[-] Searching now in Ask..
+[-] Searching now in Netcraft..
+[-] Searching now in DNSdumpster..
+[-] Searching now in Virustotal..
+[-] Searching now in ThreatCrowd..
+[-] Searching now in SSL Certificates..
+[-] Searching now in PassiveDNS..
+Process DNSdumpster-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 647, in enumerate
+    token = self.get_csrftoken(resp)
+  File "/home/kali/Sublist3r/sublist3r.py", line 641, in get_csrftoken
+    token = csrf_regex.findall(resp)[0]
+            ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+[!] Error: Virustotal probably now is blocking our requests
+Process GoogleEnum-4:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 240, in enumerate
+    if not self.check_response_errors(resp):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 303, in check_response_errors
+    if (type(resp) is str or type(resp) is unicode) and 'Our systems have detected unusual traffic' in resp:
+                                           ^^^^^^^
+NameError: name 'unicode' is not defined
+[-] Total Unique Subdomains Found: 1
+www.beemediahub.com
+cyber7% python3 sublist3r.py -d dmeta.one               
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+[-] Enumerating subdomains now for dmeta.one                                                                                                                                                
+[-] Searching now in Baidu..
+[-] Searching now in Yahoo..
+[-] Searching now in Google..
+[-] Searching now in Bing..
+[-] Searching now in Ask..
+[-] Searching now in Netcraft..
+[-] Searching now in DNSdumpster..
+[-] Searching now in Virustotal..
+[-] Searching now in ThreatCrowd..
+[-] Searching now in SSL Certificates..
+[-] Searching now in PassiveDNS..
+[!] Error: Virustotal probably now is blocking our requests
+Process DNSdumpster-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 647, in enumerate
+    token = self.get_csrftoken(resp)
+  File "/home/kali/Sublist3r/sublist3r.py", line 641, in get_csrftoken
+    token = csrf_regex.findall(resp)[0]
+            ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+cyber7% python3 sublist3r.py -d www.swisslos.ch
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+[-] Enumerating subdomains now for www.swisslos.ch                                                                                                                                          
+[-] Searching now in Baidu..
+[-] Searching now in Yahoo..
+[-] Searching now in Google..
+[-] Searching now in Bing..
+[-] Searching now in Ask..
+[-] Searching now in Netcraft..
+[-] Searching now in DNSdumpster..
+[-] Searching now in Virustotal..
+[-] Searching now in ThreatCrowd..
+[-] Searching now in SSL Certificates..
+[-] Searching now in PassiveDNS..
+Process DNSdumpster-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 647, in enumerate
+    token = self.get_csrftoken(resp)
+  File "/home/kali/Sublist3r/sublist3r.py", line 641, in get_csrftoken
+    token = csrf_regex.findall(resp)[0]
+            ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+[!] Error: Virustotal probably now is blocking our requests
+cyber7% python3 sublist3r.py -d swisslos.ch 
+
+/home/kali/Sublist3r/sublist3r.py:78: SyntaxWarning: invalid escape sequence '\_'
+  \___ \| | | | '_ \| | / __| __| |_ \| '__|
+/home/kali/Sublist3r/sublist3r.py:286: SyntaxWarning: invalid escape sequence '\/'
+  link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
+/home/kali/Sublist3r/sublist3r.py:343: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub("<(\/)?b>", "", link)
+/home/kali/Sublist3r/sublist3r.py:439: SyntaxWarning: invalid escape sequence '\/'
+  link = re.sub('<(\/)?strong>|<span.*?>|<|>', '', link)
+/home/kali/Sublist3r/sublist3r.py:658: SyntaxWarning: invalid escape sequence '\/'
+  tbl_regex = re.compile('<a name="hostanchor"><\/a>Host Records.*?<table.*?>(.*?)</table>', re.S)
+/home/kali/Sublist3r/sublist3r.py:898: SyntaxWarning: invalid escape sequence '\-'
+  domain_check = re.compile("^(http|https)?[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$")
+
+                 ____        _     _ _     _   _____                                                                                                                                        
+                / ___| _   _| |__ | (_)___| |_|___ / _ __                                                                                                                                   
+                \___ \| | | | '_ \| | / __| __| |_ \| '__|                                                                                                                                  
+                 ___) | |_| | |_) | | \__ \ |_ ___) | |                                                                                                                                     
+                |____/ \__,_|_.__/|_|_|___/\__|____/|_|                                                                                                                                     
+                                                                                                                                                                                            
+                # Coded By Ahmed Aboul-Ela - @aboul3la                                                                                                                                      
+                                                                                                                                                                                            
+[-] Enumerating subdomains now for swisslos.ch                                                                                                                                              
+[-] Searching now in Baidu..
+[-] Searching now in Yahoo..
+[-] Searching now in Google..
+[-] Searching now in Bing..
+[-] Searching now in Ask..
+[-] Searching now in Netcraft..
+[-] Searching now in DNSdumpster..
+[-] Searching now in Virustotal..
+[-] Searching now in ThreatCrowd..
+[-] Searching now in SSL Certificates..
+[-] Searching now in PassiveDNS..
+Process DNSdumpster-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 647, in enumerate
+    token = self.get_csrftoken(resp)
+  File "/home/kali/Sublist3r/sublist3r.py", line 641, in get_csrftoken
+    token = csrf_regex.findall(resp)[0]
+            ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+[!] Error: Virustotal probably now is blocking our requests
+HTTPSConnectionPool(host='searchdns.netcraft.com', port=443): Read timed out. (read timeout=25)
+Process NetcraftEnum-7:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/multiprocessing/process.py", line 313, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/home/kali/Sublist3r/sublist3r.py", line 268, in run
+    domain_list = self.enumerate()
+  File "/home/kali/Sublist3r/sublist3r.py", line 573, in enumerate
+    if 'Next Page' not in resp:
+       ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'int' is not iterable
+[-] Total Unique Subdomains Found: 85
+www.swisslos.ch
+adventslos.swisslos.ch
+app.swisslos.ch
+autodiscover.swisslos.ch
+bs.swisslos.ch
+careware.swisslos.ch
+errorpage.swisslos.ch
+esc.swisslos.ch
+extranet.swisslos.ch
+extvpn.swisslos.ch
+glueckskugel.swisslos.ch
+www.glueckskugel.swisslos.ch
+gs.swisslos.ch
+guestvpn.swisslos.ch
+horizon.swisslos.ch
+info.swisslos.ch
+info-test.swisslos.ch
+jassmeisterschaft.swisslos.ch
+legacy.swisslos.ch
+mailstats.swisslos.ch
+mgtzero.swisslos.ch
+mobile.swisslos.ch
+mobile1.swisslos.ch
+mobile2.swisslos.ch
+mx1.swisslos.ch
+mx2.swisslos.ch
+news.swisslos.ch
+news-test.swisslos.ch
+------------------------------
+hackrawler
+  -w    Show at which link the URL is found.
+cyber7% echo "https://adventslos.swisslos.ch" | hakrawler -d 3 -plain > hak_urls.txt
+
+flag provided but not defined: -plain
+Usage of hakrawler:
+  -d int
+        Depth to crawl. (default 2)
+  -dr
+        Disable following HTTP redirects.
+  -h string
+        Custom headers separated by two semi-colons. E.g. -h "Cookie: foo=bar;;Referer: http://example.com/" 
+  -i    Only crawl inside path
+  -insecure
+        Disable TLS verification.
+  -json
+        Output as JSON.
+  -proxy string
+        Proxy URL. E.g. -proxy http://127.0.0.1:8080
+  -s    Show the source of URL based on where it was found. E.g. href, form, script, etc.
+  -size int
+        Page size limit, in KB. (default -1)
+  -subs
+        Include subdomains for crawling.
+  -t int
+        Number of threads to utilise. (default 8)
+  -timeout int
+        Maximum time to crawl each URL from stdin, in seconds. (default -1)
+  -u    Show only unique urls.
+  -w    Show at which link the URL is found.
+cyber7% echo "https://adventslos.swisslos.ch" | hakrawler -d 3 -u > hak_urls.txt
+
+cyber7% ls
+CHANGELOG.md  config.yml  Dockerfile  hak_urls.txt  LICENSE  README.md  requirements.txt  setup.py  waymore
+cyber7% cat hak_urls.txt
+http://www.swisslos.ch/
+https://www.swisslos.ch/de/informationen/spiele/lose/sortiment/adventslos.html
+tel:+41848 877 855
+https://www.facebook.com/DasAdventslos/
+https://www.instagram.com/das_adventslos/
+https://www.swisslos.ch/de/meta/impressum/impressum.html
+https://www.swisslos.ch/de/meta/datenschutz/datenschutz-2019.html
+https://app.usercentrics.eu/browser-ui/latest/loader.js
+https://adventslos.swisslos.ch/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js
+https://adventslos.swisslos.ch/_next/static/chunks/webpack-5752944655d749a0.js
+https://adventslos.swisslos.ch/_next/static/chunks/framework-4556c45dd113b893.js
+https://adventslos.swisslos.ch/_next/static/chunks/main-ca9c24239e20cb7c.js
+https://adventslos.swisslos.ch/_next/static/chunks/pages/_app-1566b37a947e5ccc.js
+https://adventslos.swisslos.ch/_next/static/chunks/762-17e5a3e4012c2cc1.js
+https://adventslos.swisslos.ch/_next/static/chunks/pages/index-9ce9195135625645.js
+https://adventslos.swisslos.ch/_next/static/0mGHdBpq0vuFTndsVOlk-/_buildManifest.js
+https://adventslos.swisslos.ch/_next/static/0mGHdBpq0vuFTndsVOlk-/_ssgManifest.js
+cyber7% 
