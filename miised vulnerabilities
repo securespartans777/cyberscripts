@@ -1,0 +1,329 @@
+Here are some vulnerabilities that are commonly missed by most penetration testers, especially during time-limited or automated engagements:
+
+1. Business Logic Flaws
+Example: Bypassing payment steps, escalating privileges by manipulating user roles.
+
+Why it's missed: Tools can't detect these; requires understanding how the app is intended to work.
+
+2. Access Control Issues (IDOR)
+Example: Accessing another user's invoice by changing user_id=123 to user_id=124.
+
+Why it's missed: Often overlooked in apps with complex URL schemes or when no sensitive data is visible.
+
+3. Client-Side Validation Bypass
+Example: HTML form restricts values (e.g., price fields), but server doesn’t validate them.
+
+Why it's missed: Testers rely on what the browser shows and don’t manually alter requests.
+
+4. SSRF with Subtle Endpoints
+Example: PDF generators or image fetchers making internal requests.
+
+Why it's missed: Requires exploring undocumented or hidden features.
+
+5. Race Conditions
+Example: Sending multiple simultaneous requests to exploit double-spending or bypass limits.
+
+Why it's missed: Requires threading/scripts and deeper analysis beyond tool scans.
+
+6. Server-Side Misconfigurations (e.g., Debugging Interfaces)
+Example: Exposed /debug, /actuator, .git directories.
+
+Why it's missed: Missed due to narrow scope or assumption they’re not in prod.
+
+7. Subdomain Takeover
+Example: A DNS entry pointing to a non-existent resource (e.g., AWS S3).
+
+Why it's missed: Not usually part of standard pentest scope; needs DNS and OSINT enumeration.
+
+8. Weak Cryptographic Implementations
+Example: Custom JWT signing, using none algorithm, or weak PRNGs.
+
+Why it's missed: Crypto flaws often go unnoticed unless manually reviewed.
+
+9. Insufficient Logging and Monitoring
+Example: No alerting on brute force or SQL injection attempts.
+
+Why it's missed: Usually out of scope for red-team or web app tests but critical for blue teams.
+
+10. Chained Low-Severity Vulnerabilities
+Example: Combining verbose error messages, path traversal, and SSRF to achieve RCE.
+
+Why it's missed: Testers often report findings in isolation instead of thinking about chained impact.
+
+Would you like a custom checklist or script to help you identify these during your engagements?
+
+
+
+
+
+
+
+You said:
+Yes
+ChatGPT said:
+Here's a custom Vulnerability Checklist & Script Toolkit to help you catch commonly missed vulnerabilities in web apps:
+
+✅ Custom Checklist for Missed Vulnerabilities
+1. Business Logic Flaws
+ Try skipping steps (e.g., payment, verification)
+
+ Attempt privilege escalation by modifying roles or flags
+
+ Test for limits (e.g., changing quantity to -1, price to 0)
+
+2. Insecure Direct Object Reference (IDOR)
+ Replace all user_id, invoice_id, etc. with others
+
+ Check authenticated vs unauthenticated behavior
+
+ Use Autorize Burp extension for automation
+
+3. Client-side Bypass
+ Remove JavaScript-based restrictions
+
+ Modify form values and headers via Burp/Repeater
+
+ Re-validate all client-side validated fields on server side
+
+4. SSRF
+ Inject http://127.0.0.1, http://169.254.169.254 into image/pdf generators
+
+ Use requestbin or Burp Collaborator to detect outbound requests
+
+5. Race Condition
+ Use turbo intruder or custom scripts:
+
+bash
+Copy
+Edit
+# Simple curl-based race condition test
+for i in {1..10}; do curl -X POST https://target/apply_coupon -d "coupon=SAVE100" & done
+6. Subdomain Takeover
+ Enumerate subdomains (e.g., assetfinder, sublist3r)
+
+ Check for NXDOMAIN or unlinked services
+
+bash
+Copy
+Edit
+# Example using subjack
+subjack -w subdomains.txt -t 50 -timeout 30 -ssl -c fingerprints.json -v
+7. Uncommon Sensitive Files
+ Scan for:
+
+bash
+Copy
+Edit
+/.env
+/.git/config
+/config.json
+/debug
+/actuator
+/.DS_Store
+8. Weak JWT or Crypto
+ Try none algorithm in JWT
+
+ Use jwt_tool.py:
+
+bash
+Copy
+Edit
+python3 jwt_tool.py -t <token> -S -C -d
+9. Chained Vulnerabilities
+ Combine low-risk findings (e.g., verbose error + SSRF + RCE)
+
+ Look for open redirect + cookie injection
+
+10. Logging and Monitoring
+ Trigger alert-worthy actions (e.g., SQLi, brute force)
+
+ Check for missing audit trails
+
+Would you like this exported as a printable PDF or a markdown file for integration into your pentesting documentation?
+
+You said:
+More vulnerabilities
+ChatGPT said:
+Here’s a second list of often-overlooked vulnerabilities that even experienced penetration testers can miss during engagements:
+
+⚠️ More Commonly Missed Vulnerabilities
+11. DOM-Based XSS
+Why it’s missed: Static scanners often fail here.
+
+What to do: Use dom-xss-scanner or manually test scripts in browser DevTools.
+
+12. Prototype Pollution
+Why it’s missed: Happens in JavaScript-heavy apps (especially Node.js).
+
+What to do: Test with payloads like:
+
+json
+Copy
+Edit
+{"__proto__":{"admin":true}}
+Use ppfuzz or synk-proto-pollution-scanner.
+
+13. Cache Poisoning
+Why it’s missed: Needs edge case analysis.
+
+What to do: Try injecting headers like:
+
+http
+Copy
+Edit
+X-Forwarded-Host: evil.com
+X-Original-URL: /admin
+14. CSP Bypass
+Why it’s missed: Most testers don't fully analyze Content-Security-Policy headers.
+
+What to do: Use csp-evaluator and test known bypasses (inline scripts, trusted sources).
+
+15. WebSocket Insecurity
+Why it’s missed: Tools often skip WS/WSS endpoints.
+
+What to do: Use Burp with WebSocket history. Look for:
+
+Missing auth
+
+Sensitive data leakage
+
+IDOR inside WebSocket traffic
+
+16. Clickjacking
+Why it’s missed: Often marked as “low,” but can lead to real attacks.
+
+What to do: Check for missing X-Frame-Options or Content-Security-Policy: frame-ancestors.
+
+17. Deserialization Attacks
+Why it’s missed: Needs code-level knowledge or fuzzing.
+
+What to do: Use ysoserial (Java), PHPGGC (PHP), or test binary objects.
+
+18. Path Normalization / Bypass
+Why it’s missed: Filters often bypassed using encoded chars.
+
+What to do:
+
+bash
+Copy
+Edit
+GET /..%2fadmin
+GET /%2e%2e/admin
+19. OAuth/OpenID Misconfigurations
+Why it’s missed: Involves external auth services.
+
+What to do:
+
+Try login CSRF
+
+Attempt token reuse across accounts
+
+Abuse “redirect_uri” parameter
+
+20. Local File Inclusion (LFI) via Logs or Uploads
+Why it’s missed: Not tested in combination with log injection.
+
+What to do:
+
+bash
+Copy
+Edit
+# Inject log and include it
+User-Agent: <?php system('id'); ?>
+# Then request:
+GET /index.php?page=../../../../var/log/apache2/access.log
+Would you like a downloadable combined list (Markdown, PDF, or HTML) for offline use or reporting templates?
+
+You said:
+More 
+ChatGPT said:
+Absolutely — here’s a third batch of high-value, commonly missed vulnerabilities with practical tips:
+
+⚠️ Even More Rarely Detected Vulnerabilities
+21. JWT Key Confusion / Key Injection
+Why it’s missed: Happens when servers accept both HS256 and RS256 algorithms.
+
+What to do:
+
+Try changing algorithm from RS256 to HS256 and sign with public key.
+
+22. SAML Authentication Bypass
+Why it’s missed: Complex XML structures, often blindly trusted.
+
+What to do:
+
+Try replaying assertions.
+
+Flip NameID or manipulate NotBefore/NotOnOrAfter.
+
+23. Blind XPath Injection
+Why it’s missed: Looks like normal input errors; no visual output.
+
+What to do:
+
+bash
+Copy
+Edit
+' or 1=1 or ''='
+' or name()='admin' and '1'='1
+24. Password Reset Poisoning
+Why it’s missed: Header injection into reset URL logic.
+
+What to do:
+
+Inject Host: headers:
+
+http
+Copy
+Edit
+Host: attacker.com
+25. CORS Misconfigurations
+Why it’s missed: Only verified against *.
+
+What to do:
+
+Send Origin: https://evil.com
+
+See if Access-Control-Allow-Origin reflects it.
+
+26. Email Spoofing via SPF/DMARC Misconfig
+Why it’s missed: Requires DNS inspection, not app testing.
+
+What to do:
+
+Use dmarcian, MXToolbox, or spf-check tools to validate records.
+
+27. Abusing PDF/Doc Uploads for Malware
+Why it’s missed: Assumed to be just file upload testing.
+
+What to do:
+
+Inject malicious macro/scripts and test if the file is processed or executed server-side (e.g., PDF renderers).
+
+28. Hidden Parameters / Forced Browsing
+Why it’s missed: Parameters hidden in JS, not in forms.
+
+What to do:
+
+Use ParamMiner (Burp plugin)
+
+Test hidden endpoints like /admin, /test, /debug
+
+29. Abuse of Cloud Metadata Services
+Why it’s missed: Only SSRF into internal IPs tested.
+
+What to do:
+
+bash
+Copy
+Edit
+curl http://169.254.169.254/latest/meta-data/
+Target AWS, GCP, Azure metadata endpoints.
+
+30. Browser-Based Exploits (Universal XSS / UXSS)
+Why it’s missed: Needs browser-level payload crafting.
+
+What to do:
+
+Test malformed iframes or script URIs inside extensions/web views.
+
